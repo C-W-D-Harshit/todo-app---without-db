@@ -2,8 +2,18 @@ import Head from "next/head";
 import AddTodo from "../../components/AddTodo";
 import styles from "../styles/Home.module.css";
 import Toggle from "../../components/toggle";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { at, bt } from "../../reducers/todoSlice";
 
 export default function Home() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const todos = localStorage.getItem("todos")
+      ? JSON.parse(localStorage.getItem("todos"))
+      : [];
+    dispatch(at(todos));
+  }, [dispatch]);
   return (
     <>
       <Head>

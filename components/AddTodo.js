@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Button,
@@ -11,15 +11,24 @@ import {
   Badge,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { at } from "../reducers/todoSlice";
 
 export default function Todos() {
+  const dispatch = useDispatch();
+  const bakara = useSelector((state) => state.todo.todos);
   const [todos, setTodos] = useState([]);
-
   const [title, setTitle] = useState("");
+  // useEffect(() => {
+  //   setTodos(bakara);
+  // }, [setTodos, bakara]);
+
+  const [t, setT] = useState(false);
 
   const handleAdd = () => {
     setTodos([...todos, { id: Date.now(), title: title, completed: false }]);
     setTitle("");
+    dispatch(at(todos));
   };
 
   const handleToggle = (id) => {
@@ -91,21 +100,22 @@ export default function Todos() {
         </Stack>
         <Stack>
           <ul>
-            {todos.map((todo) => (
-              <li style={{ margin: "5px" }} key="">
-                {todo.title}-{" "}
-                <Badge colorScheme={todo.completed ? "green" : "red"}>
-                  {todo.completed ? "completed" : "incomplete"}
-                </Badge>
-                <Button
-                  marginX={"5"}
-                  size={"sm"}
-                  onClick={() => handleToggle(todo.id)}
-                >
-                  Toggle
-                </Button>
-              </li>
-            ))}
+            {todos &&
+              todos.map((todo) => (
+                <li style={{ margin: "5px" }} key={todo.id}>
+                  {todo.title}-{" "}
+                  <Badge colorScheme={todo.completed ? "green" : "red"}>
+                    {todo.completed ? "completed" : "incomplete"}
+                  </Badge>
+                  <Button
+                    marginX={"5"}
+                    size={"sm"}
+                    onClick={() => handleToggle(todo.id)}
+                  >
+                    Toggle
+                  </Button>
+                </li>
+              ))}
           </ul>
 
           <Button onClick={() => handleClearCompleted()}>
